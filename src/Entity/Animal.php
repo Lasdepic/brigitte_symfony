@@ -4,6 +4,8 @@ namespace App\Entity;
 
 use App\Enum\Sexe;
 use App\Repository\AnimalRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -35,6 +37,26 @@ class Animal
 
     #[ORM\Column]
     private ?bool $est_adoptable = null;
+
+    #[ORM\ManyToOne(inversedBy: 'id_animal')]
+    private ?Espece $espece = null;
+
+    #[ORM\ManyToOne(inversedBy: 'animal')]
+    private ?Origine $origine = null;
+
+    #[ORM\OneToOne(mappedBy: 'animal', cascade: ['persist', 'remove'])]
+    private ?CarnetSante $carnetSante = null;
+
+    /**
+     * @var Collection<int, Maladie>
+     */
+    #[ORM\OneToMany(targetEntity: Maladie::class, mappedBy: 'animal')]
+    private Collection $maladies;
+
+    public function __construct()
+    {
+        $this->maladies = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -121,6 +143,82 @@ class Animal
     public function setEstAdoptable(bool $est_adoptable): static
     {
         $this->est_adoptable = $est_adoptable;
+
+        return $this;
+    }
+
+    public function getEspece(): ?Espece
+    {
+        return $this->espece;
+    }
+
+    public function setEspece(?Espece $espece): static
+    {
+        $this->espece = $espece;
+
+        return $this;
+    }
+
+    public function getOrigine(): ?Origine
+    {
+        return $this->origine;
+    }
+
+    public function setOrigine(?Origine $origine): static
+    {
+        $this->origine = $origine;
+
+        return $this;
+    }
+
+    public function getCarnetSante(): ?CarnetSante
+    {
+        return $this->carnetSante;
+    }
+
+    public function setCarnetSante(?CarnetSante $carnetSante): static
+    {
+        // unset the owning side of the relation if necessary
+        if ($carnetSante === null && $this->carnetSante !== null) {
+            $this->carnetSante->setAnimal(null);
+        }
+
+        // set the owning side of the relation if necessary
+        if ($carnetSante !== null && $carnetSante->getAnimal() !== $this) {
+            $carnetSante->setAnimal($this);
+        }
+
+        $this->carnetSante = $carnetSante;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Maladie>
+     */
+    public function getMaladies(): Collection
+    {
+        return $this->maladies;
+    }
+
+    public function addMalady(Maladie $malady): static
+    {
+        if (!$this->maladies->contains($malady)) {
+            $this->maladies->add($malady);
+            $malady->setAnimal($this);
+        }
+
+        return $this;
+    }
+
+    public function removeMalady(Maladie $malady): static
+    {
+        if ($this->maladies->removeElement($malady)) {
+            // set the owning side to null (unless already changed)
+            if ($malady->getAnimal() === $this) {
+                $malady->setAnimal(null);
+            }
+        }
 
         return $this;
     }
