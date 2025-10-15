@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Enum\Sexe;
 use App\Repository\AnimalRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
@@ -14,23 +15,26 @@ class Animal
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(length: 50)]
+    #[ORM\Column(length: 255)]
     private ?string $nom = null;
 
-    #[ORM\Column(length: 255, nullable: true)]
+    #[ORM\Column(type: Types::DATE_MUTABLE)]
+    private ?\DateTime $date_naissance = null;
+
+    #[ORM\Column(length: 255)]
     private ?string $description = null;
 
-    #[ORM\Column(length: 50)]
-    private ?string $sexe = null;
+    #[ORM\Column(length: 10)]
+    private ?string $num_identification = null;
 
-    #[ORM\Column(length: 20)]
-    private ?string $numIdentification = null;
+    #[ORM\Column(enumType: Sexe::class)]
+    private ?Sexe $sexe = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE)]
-    private ?\DateTime $dateArrive = null;
+    private ?\DateTime $date_arrivee = null;
 
     #[ORM\Column]
-    private ?bool $estAdoptable = null;
+    private ?bool $est_adoptable = null;
 
     public function getId(): ?int
     {
@@ -49,62 +53,74 @@ class Animal
         return $this;
     }
 
+    public function getDateNaissance(): ?\DateTime
+    {
+        return $this->date_naissance;
+    }
+
+    public function setDateNaissance(\DateTime $date_naissance): static
+    {
+        $this->date_naissance = $date_naissance;
+
+        return $this;
+    }
+
     public function getDescription(): ?string
     {
         return $this->description;
     }
 
-    public function setDescription(?string $description): static
+    public function setDescription(string $description): static
     {
         $this->description = $description;
 
         return $this;
     }
 
-    public function getSexe(): ?string
+    public function getNumIdentification(): ?string
+    {
+        return $this->num_identification;
+    }
+
+    public function setNumIdentification(string $num_identification): static
+    {
+        $this->num_identification = $num_identification;
+
+        return $this;
+    }
+
+    public function getSexe(): ?Sexe
     {
         return $this->sexe;
     }
 
-    public function setSexe(string $sexe): static
+    public function setSexe(Sexe $sexe): static
     {
         $this->sexe = $sexe;
 
         return $this;
     }
 
-    public function getNumIdentification(): ?string
+    public function getDateArrivee(): ?\DateTime
     {
-        return $this->numIdentification;
+        return $this->date_arrivee;
     }
 
-    public function setNumIdentification(string $numIdentification): static
+    public function setDateArrivee(\DateTime $date_arrivee): static
     {
-        $this->numIdentification = $numIdentification;
-
-        return $this;
-    }
-
-    public function getDateArrive(): ?\DateTime
-    {
-        return $this->dateArrive;
-    }
-
-    public function setDateArrive(\DateTime $dateArrive): static
-    {
-        $this->dateArrive = $dateArrive;
+        $this->date_arrivee = $date_arrivee;
 
         return $this;
     }
 
     public function isEstAdoptable(): ?bool
     {
-        return $this->estAdoptable;
+        return $this->est_adoptable;
     }
 
-    public function setEstAdoptable(bool $estAdoptable): static
+    public function setEstAdoptable(bool $est_adoptable): static
     {
-        $this->estAdoptable = $estAdoptable;
+        $this->est_adoptable = $est_adoptable;
 
         return $this;
     }
