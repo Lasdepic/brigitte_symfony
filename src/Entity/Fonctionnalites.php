@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\FonctionnalitesRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: FonctionnalitesRepository::class)]
@@ -18,6 +20,17 @@ class Fonctionnalites
 
     #[ORM\Column(length: 255)]
     private ?string $type_fonctionnalite = null;
+
+    /**
+     * @var Collection<int, Cage>
+     */
+    #[ORM\ManyToMany(targetEntity: Cage::class, inversedBy: 'fonctionnalites')]
+    private Collection $cage;
+
+    public function __construct()
+    {
+        $this->cage = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -44,6 +57,30 @@ class Fonctionnalites
     public function setTypeFonctionnalite(string $type_fonctionnalite): static
     {
         $this->type_fonctionnalite = $type_fonctionnalite;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Cage>
+     */
+    public function getCage(): Collection
+    {
+        return $this->cage;
+    }
+
+    public function addCage(Cage $cage): static
+    {
+        if (!$this->cage->contains($cage)) {
+            $this->cage->add($cage);
+        }
+
+        return $this;
+    }
+
+    public function removeCage(Cage $cage): static
+    {
+        $this->cage->removeElement($cage);
 
         return $this;
     }
