@@ -4,6 +4,8 @@ namespace App\Entity;
 
 use App\Enum\Sexe;
 use App\Repository\EmployesRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: EmployesRepository::class)]
@@ -31,6 +33,24 @@ class Employes
 
     #[ORM\Column(length: 255)]
     private ?string $type_poste = null;
+
+    /**
+     * @var Collection<int, Cage>
+     */
+    #[ORM\ManyToMany(targetEntity: Cage::class, inversedBy: 'employes')]
+    private Collection $cage;
+
+    /**
+     * @var Collection<int, Allee>
+     */
+    #[ORM\ManyToMany(targetEntity: Allee::class, inversedBy: 'employes')]
+    private Collection $allee;
+
+    public function __construct()
+    {
+        $this->cage = new ArrayCollection();
+        $this->allee = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -105,6 +125,54 @@ class Employes
     public function setTypePoste(string $type_poste): static
     {
         $this->type_poste = $type_poste;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Cage>
+     */
+    public function getCage(): Collection
+    {
+        return $this->cage;
+    }
+
+    public function addCage(Cage $cage): static
+    {
+        if (!$this->cage->contains($cage)) {
+            $this->cage->add($cage);
+        }
+
+        return $this;
+    }
+
+    public function removeCage(Cage $cage): static
+    {
+        $this->cage->removeElement($cage);
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Allee>
+     */
+    public function getAllee(): Collection
+    {
+        return $this->allee;
+    }
+
+    public function addAllee(Allee $allee): static
+    {
+        if (!$this->allee->contains($allee)) {
+            $this->allee->add($allee);
+        }
+
+        return $this;
+    }
+
+    public function removeAllee(Allee $allee): static
+    {
+        $this->allee->removeElement($allee);
 
         return $this;
     }

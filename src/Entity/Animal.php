@@ -4,6 +4,8 @@ namespace App\Entity;
 
 use App\Enum\Sexe;
 use App\Repository\AnimalRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -35,6 +37,27 @@ class Animal
 
     #[ORM\Column]
     private ?bool $est_adoptable = null;
+
+    /**
+     * @var Collection<int, Maladie>
+     */
+    #[ORM\ManyToMany(targetEntity: Maladie::class, mappedBy: 'animal')]
+    private Collection $maladies;
+
+    #[ORM\OneToOne(mappedBy: 'animal', cascade: ['persist', 'remove'])]
+    private ?CarnetSante $carnetSante = null;
+
+    #[ORM\ManyToOne(inversedBy: 'animal')]
+    private ?Menu $menu = null;
+
+    #[ORM\ManyToOne(inversedBy: 'animal')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Cage $cage = null;
+
+    public function __construct()
+    {
+        $this->maladies = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -121,6 +144,74 @@ class Animal
     public function setEstAdoptable(bool $est_adoptable): static
     {
         $this->est_adoptable = $est_adoptable;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Maladie>
+     */
+    public function getMaladies(): Collection
+    {
+        return $this->maladies;
+    }
+
+    public function addMalady(Maladie $malady): static
+    {
+        if (!$this->maladies->contains($malady)) {
+            $this->maladies->add($malady);
+            $malady->addAnimal($this);
+        }
+
+        return $this;
+    }
+
+    public function removeMalady(Maladie $malady): static
+    {
+        if ($this->maladies->removeElement($malady)) {
+            $malady->removeAnimal($this);
+        }
+
+        return $this;
+    }
+
+    public function getCarnetSante(): ?CarnetSante
+    {
+        return $this->carnetSante;
+    }
+
+    public function setCarnetSante(CarnetSante $carnetSante): static
+    {
+        // set the owning side of the relation if necessary
+        if ($carnetSante->getAnimal() !== $this) {
+            $carnetSante->setAnimal($this);
+        }
+
+        $this->carnetSante = $carnetSante;
+
+        return $this;
+    }
+
+    public function getMenu(): ?Menu
+    {
+        return $this->menu;
+    }
+
+    public function setMenu(?Menu $menu): static
+    {
+        $this->menu = $menu;
+
+        return $this;
+    }
+
+    public function getCage(): ?Cage
+    {
+        return $this->cage;
+    }
+
+    public function setCage(?Cage $cage): static
+    {
+        $this->cage = $cage;
 
         return $this;
     }
