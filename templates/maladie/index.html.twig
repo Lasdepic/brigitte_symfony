@@ -1,0 +1,35 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Maladie index{% endblock %}
+
+{% block body %}
+    <h1>Maladie index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Nom_maladie</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for maladie in maladies %}
+            <tr>
+                <td>{{ maladie.id }}</td>
+                <td>{{ maladie.nomMaladie }}</td>
+                <td>
+                    <a href="{{ path('app_maladie_show', {'id': maladie.id}) }}">show</a>
+                    <a href="{{ path('app_maladie_edit', {'id': maladie.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="3">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_maladie_new') }}">Create new</a>
+{% endblock %}

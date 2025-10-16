@@ -1,0 +1,30 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Fonctionnalites{% endblock %}
+
+{% block body %}
+    <h1>Fonctionnalites</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ fonctionnalite.id }}</td>
+            </tr>
+            <tr>
+                <th>Num_fonctionnalite</th>
+                <td>{{ fonctionnalite.numFonctionnalite }}</td>
+            </tr>
+            <tr>
+                <th>Type_fonctionnalite</th>
+                <td>{{ fonctionnalite.typeFonctionnalite }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_fonctionnalites_index') }}">back to list</a>
+
+    <a href="{{ path('app_fonctionnalites_edit', {'id': fonctionnalite.id}) }}">edit</a>
+
+    {{ include('fonctionnalites/_delete_form.html.twig') }}
+{% endblock %}

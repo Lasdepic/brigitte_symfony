@@ -1,0 +1,13 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Edit Fonctionnalites{% endblock %}
+
+{% block body %}
+    <h1>Edit Fonctionnalites</h1>
+
+    {{ include('fonctionnalites/_form.html.twig', {'button_label': 'Update'}) }}
+
+    <a href="{{ path('app_fonctionnalites_index') }}">back to list</a>
+
+    {{ include('fonctionnalites/_delete_form.html.twig') }}
+{% endblock %}
