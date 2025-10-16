@@ -1,45 +1,46 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Employes index{% endblock %}
+{% block title %}Employes index
+{% endblock %}
 
 {% block body %}
-    <h1>Employes index</h1>
+	<h1>Employes index</h1>
 
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Id</th>
-                <th>Nom_employe</th>
-                <th>Prenom_employe</th>
-                <th>Num_employe</th>
-                <th>Sexe_employe</th>
-                <th>Ville_employe</th>
-                <th>Type_poste</th>
-                <th>actions</th>
-            </tr>
-        </thead>
-        <tbody>
-        {% for employe in employes %}
-            <tr>
-                <td>{{ employe.id }}</td>
-                <td>{{ employe.nomEmploye }}</td>
-                <td>{{ employe.prenomEmploye }}</td>
-                <td>{{ employe.numEmploye }}</td>
-                <td>{{ employe.sexeEmploye }}</td>
-                <td>{{ employe.villeEmploye }}</td>
-                <td>{{ employe.typePoste }}</td>
-                <td>
-                    <a href="{{ path('app_employes_show', {'id': employe.id}) }}">show</a>
-                    <a href="{{ path('app_employes_edit', {'id': employe.id}) }}">edit</a>
-                </td>
-            </tr>
-        {% else %}
-            <tr>
-                <td colspan="8">no records found</td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
+	<table class="table">
+		<thead>
+			<tr>
+				<th>Id</th>
+				<th>Nom_employe</th>
+				<th>Prenom_employe</th>
+				<th>Num_employe</th>
+				<th>Sexe_employe</th>
+				<th>Ville_employe</th>
+				<th>Type_poste</th>
+				<th>actions</th>
+			</tr>
+		</thead>
+		<tbody>
+			{% for employe in employes %}
+				<tr>
+					<td>{{ employe.id }}</td>
+					<td>{{ employe.nomEmploye }}</td>
+					<td>{{ employe.prenomEmploye }}</td>
+					<td>{{ employe.numEmploye }}</td>
+					<td>{{ employe.sexeEmploye.label() }}</td>
+					<td>{{ employe.villeEmploye }}</td>
+					<td>{{ employe.typePoste }}</td>
+					<td>
+						<a href="{{ path('app_employes_show', {'id': employe.id}) }}">show</a>
+						<a href="{{ path('app_employes_edit', {'id': employe.id}) }}">edit</a>
+					</td>
+				</tr>
+			{% else %}
+				<tr>
+					<td colspan="8">no records found</td>
+				</tr>
+			{% endfor %}
+		</tbody>
+	</table>
 
-    <a href="{{ path('app_employes_new') }}">Create new</a>
+	<a href="{{ path('app_employes_new') }}">Create new</a>
 {% endblock %}
