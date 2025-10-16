@@ -5,6 +5,8 @@ namespace App\Form;
 use App\Entity\Allee;
 use App\Entity\Cage;
 use App\Entity\Employes;
+use APP\Enum\Sexe;
+use Symfony\Component\Form\Extension\Core\Type\EnumType;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -18,7 +20,10 @@ class EmployesType extends AbstractType
             ->add('nom_employe')
             ->add('prenom_employe')
             ->add('num_employe')
-            ->add('sexe_employe')
+            ->add('sexeEmploye', EnumType::class, [
+                'class' => Sexe::class,
+                'choice_label' => fn(Sexe $s) => $s->label(),
+            ])
             ->add('ville_employe')
             ->add('type_poste')
             ->add('cage', EntityType::class, [
