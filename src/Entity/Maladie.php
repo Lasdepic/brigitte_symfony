@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\MaladieRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: MaladieRepository::class)]
@@ -15,9 +17,16 @@ class Maladie
 
     #[ORM\Column(length: 50)]
     private ?string $nom_maladie = null;
+    /**
+     * @var Collection<int, Animal>
+     */
+    #[ORM\ManyToMany(targetEntity: Animal::class, inversedBy: 'maladies')]
+    private Collection $animal;
 
-    #[ORM\ManyToOne(inversedBy: 'maladies')]
-    private ?Animal $animal = null;
+    public function __construct()
+    {
+        $this->animal = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -36,15 +45,32 @@ class Maladie
         return $this;
     }
 
-    public function getAnimal(): ?Animal
+
+    /**
+     * @return Collection<int, Animal>
+     */
+    public function getAnimal(): Collection
     {
         return $this->animal;
     }
 
+
     public function setAnimal(?Animal $animal): static
     {
         $this->animal = $animal;
+    }
+    public function addAnimal(Animal $animal): static
+    {
+        if (!$this->animal->contains($animal)) {
+            $this->animal->add($animal);
+        }
 
+        return $this;
+    }
+
+    public function removeAnimal(Animal $animal): static
+    {
+        $this->animal->removeElement($animal);
         return $this;
     }
 }

@@ -50,8 +50,19 @@ class Animal
     /**
      * @var Collection<int, Maladie>
      */
-    #[ORM\OneToMany(targetEntity: Maladie::class, mappedBy: 'animal')]
+    #[ORM\ManyToMany(targetEntity: Maladie::class, mappedBy: 'animal')]
     private Collection $maladies;
+
+    #[ORM\OneToOne(mappedBy: 'animal', cascade: ['persist', 'remove'])]
+    private ?CarnetSante $carnetSante = null;
+
+    #[ORM\ManyToOne(inversedBy: 'animal')]
+    private ?Menu $menu = null;
+
+    #[ORM\ManyToOne(inversedBy: 'animal')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Cage $cage = null;
+
 
     public function __construct()
     {
@@ -155,44 +166,6 @@ class Animal
     public function setEspece(?Espece $espece): static
     {
         $this->espece = $espece;
-
-        return $this;
-    }
-
-    public function getOrigine(): ?Origine
-    {
-        return $this->origine;
-    }
-
-    public function setOrigine(?Origine $origine): static
-    {
-        $this->origine = $origine;
-
-        return $this;
-    }
-
-    public function getCarnetSante(): ?CarnetSante
-    {
-        return $this->carnetSante;
-    }
-
-    public function setCarnetSante(?CarnetSante $carnetSante): static
-    {
-        // unset the owning side of the relation if necessary
-        if ($carnetSante === null && $this->carnetSante !== null) {
-            $this->carnetSante->setAnimal(null);
-        }
-
-        // set the owning side of the relation if necessary
-        if ($carnetSante !== null && $carnetSante->getAnimal() !== $this) {
-            $carnetSante->setAnimal($this);
-        }
-
-        $this->carnetSante = $carnetSante;
-
-        return $this;
-    }
-
     /**
      * @return Collection<int, Maladie>
      */
@@ -205,21 +178,68 @@ class Animal
     {
         if (!$this->maladies->contains($malady)) {
             $this->maladies->add($malady);
-            $malady->setAnimal($this);
+            $malady->addAnimal($this);
         }
 
         return $this;
     }
 
+
+    public function getOrigine(): ?Origine
+    {
+        return $this->origine;
+    }
+
+    public function setOrigine(?Origine $origine): static
+    {
+        $this->origine = $origine;
+    }
     public function removeMalady(Maladie $malady): static
     {
         if ($this->maladies->removeElement($malady)) {
-            // set the owning side to null (unless already changed)
-            if ($malady->getAnimal() === $this) {
-                $malady->setAnimal(null);
-            }
+            $malady->removeAnimal($this);
+        }
+    }
+
+        return $this;
+    }
+
+    public function getCarnetSante(): ?CarnetSante
+    {
+        return $this->carnetSante;
+    }
+
+    public function setCarnetSante(CarnetSante $carnetSante): static
+    {
+        // set the owning side of the relation if necessary
+        if ($carnetSante->getAnimal() !== $this) {
+            $carnetSante->setAnimal($this);
         }
 
+        $this->carnetSante = $carnetSante;
+
+        return $this;
+    }
+
+    public function getMenu(): ?Menu
+    {
+        return $this->menu;
+    }
+
+    public function setMenu(?Menu $menu): static
+    {
+        $this->menu = $menu;
+        return $this;
+    }
+
+    public function getCage(): ?Cage
+    {
+        return $this->cage;
+    }
+
+    public function setCage(?Cage $cage): static
+    {
+        $this->cage = $cage;
         return $this;
     }
 }
