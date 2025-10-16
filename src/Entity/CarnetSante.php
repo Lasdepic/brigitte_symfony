@@ -24,6 +24,7 @@ class CarnetSante
     private ?\DateTime $date_future_vaccination = null;
 
     #[ORM\OneToOne(inversedBy: 'carnetSante', cascade: ['persist', 'remove'])]
+
     #[ORM\JoinColumn(nullable: false)]
     private ?Animal $animal = null;
 
@@ -73,10 +74,9 @@ class CarnetSante
         return $this->animal;
     }
 
-    public function setAnimal(Animal $animal): static
+    public function setAnimal(?Animal $animal): static
     {
         $this->animal = $animal;
-
         return $this;
     }
 }

@@ -38,6 +38,15 @@ class Animal
     #[ORM\Column]
     private ?bool $est_adoptable = null;
 
+    #[ORM\ManyToOne(inversedBy: 'id_animal')]
+    private ?Espece $espece = null;
+
+    #[ORM\ManyToOne(inversedBy: 'animal')]
+    private ?Origine $origine = null;
+
+    #[ORM\OneToOne(mappedBy: 'animal', cascade: ['persist', 'remove'])]
+    private ?CarnetSante $carnetSante = null;
+
     /**
      * @var Collection<int, Maladie>
      */
@@ -53,6 +62,7 @@ class Animal
     #[ORM\ManyToOne(inversedBy: 'animal')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Cage $cage = null;
+
 
     public function __construct()
     {
@@ -148,6 +158,14 @@ class Animal
         return $this;
     }
 
+    public function getEspece(): ?Espece
+    {
+        return $this->espece;
+    }
+
+    public function setEspece(?Espece $espece): static
+    {
+        $this->espece = $espece;
     /**
      * @return Collection<int, Maladie>
      */
@@ -166,11 +184,22 @@ class Animal
         return $this;
     }
 
+
+    public function getOrigine(): ?Origine
+    {
+        return $this->origine;
+    }
+
+    public function setOrigine(?Origine $origine): static
+    {
+        $this->origine = $origine;
+    }
     public function removeMalady(Maladie $malady): static
     {
         if ($this->maladies->removeElement($malady)) {
             $malady->removeAnimal($this);
         }
+    }
 
         return $this;
     }
@@ -200,7 +229,6 @@ class Animal
     public function setMenu(?Menu $menu): static
     {
         $this->menu = $menu;
-
         return $this;
     }
 
@@ -212,7 +240,6 @@ class Animal
     public function setCage(?Cage $cage): static
     {
         $this->cage = $cage;
-
         return $this;
     }
 }

@@ -17,7 +17,6 @@ class Maladie
 
     #[ORM\Column(length: 50)]
     private ?string $nom_maladie = null;
-
     /**
      * @var Collection<int, Animal>
      */
@@ -46,6 +45,7 @@ class Maladie
         return $this;
     }
 
+
     /**
      * @return Collection<int, Animal>
      */
@@ -54,6 +54,11 @@ class Maladie
         return $this->animal;
     }
 
+
+    public function setAnimal(?Animal $animal): static
+    {
+        $this->animal = $animal;
+    }
     public function addAnimal(Animal $animal): static
     {
         if (!$this->animal->contains($animal)) {
@@ -66,7 +71,6 @@ class Maladie
     public function removeAnimal(Animal $animal): static
     {
         $this->animal->removeElement($animal);
-
         return $this;
     }
 }
